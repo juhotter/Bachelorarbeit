@@ -4,7 +4,7 @@
 
 # Automatisiertes Herunterladen von APKS
 `./eval.py download --fromfile FILENAME `
-  > es muss sich ein .txt File im selben Ordner befinden, wo Packagenamen aufgeslistet sind.
+  > es muss sich ein .txt File im selben Ordner befinden, wo Packagenamen aufgelistet sind.
 
 
 # Auswertung eines TextFiles welches JSON Lines enthält:
