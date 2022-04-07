@@ -12,9 +12,9 @@
 
 # Wendet eine Methode auf eine Bestimmte APK an:
 `./eval.py run --method METHODENNAME NAME.APK `
-choose between:
-- apkmitm,
-    * objection,
-    * frida,
-    * none,
-    * rooted 
+< choose between:
+- apkmitm
+- objection
+- frida
+- none,
+- rooted 
