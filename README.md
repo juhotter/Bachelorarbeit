@@ -12,6 +12,7 @@
 
 # Auswertung eines TextFiles welches JSON Lines enthält:
 `./eval.py evaluate`
+ > Hier kann man zwischen mehreren Methoden im Quellcode wählen - zur Reproduktion Links mit .txt dabei.
 
 # Wendet eine Methode auf eine Bestimmte APK an:
 `./eval.py run --method METHODENNAME NAME.APK `
