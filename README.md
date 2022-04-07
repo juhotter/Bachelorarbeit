@@ -22,3 +22,8 @@
 - frida
 - none,
 - rooted 
+
+# Im Log-File
+- Version 1: ohne Interaktion
+- Version 2: manuelle Interaktion
+- Version 3: automatische Interaktion ( default ) 
