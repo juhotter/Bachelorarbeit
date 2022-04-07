@@ -37,7 +37,7 @@ t_start = time.time()
 
 def log_result(data: tls.TlsData, success: bool) -> None:
     result = json.dumps({
-        "version": 4,
+        "version": 3,
         "timestamp": t_start,
         "sni": data.context.server.sni,
         "success": success,
