@@ -77,6 +77,7 @@ def endMitmProxy():
 
 
 def parseJsonFile_emulator_vs_hardware():
+#https://github.com/juhotter/Bachelorarbeit/blob/f91ada72ed775631d2bd4ca758b2531d8ecd2bca/Log_Files/vergleich_emulator_hardware_rooted_approach.txt
     global model
     model = "Oneplus 6 - Android 11 "
     subprocess.run("cp tls-log.txt tls-log.json", shell=True)
@@ -99,6 +100,7 @@ def parseJsonFile_emulator_vs_hardware():
 
 
 def parseJsonFile_gruppenvergleich():
+#https://github.com/juhotter/Bachelorarbeit/blob/f91ada72ed775631d2bd4ca758b2531d8ecd2bca/Log_Files/popularityVergleich.txt
     global model
     model = "Oneplus 6 - Android 11 "
     subprocess.run("cp tls-log.txt tls-log.json", shell=True)
@@ -125,6 +127,7 @@ def parseJsonFile_gruppenvergleich():
     
 
 def parseJsonFile_allhardware():
+#https://github.com/juhotter/Bachelorarbeit/blob/f91ada72ed775631d2bd4ca758b2531d8ecd2bca/Log_Files/all_hardware_devices_approaches_together.txt
     global model
     model = "Oneplus 6 - Android 11 "
     subprocess.run("cp tls-log.txt tls-log.json", shell=True)
@@ -147,6 +150,7 @@ def parseJsonFile_allhardware():
 
 
 def parseJsonFile_methodenvergleich():
+#https://github.com/juhotter/Bachelorarbeit/blob/f91ada72ed775631d2bd4ca758b2531d8ecd2bca/Log_Files/vergleich_zwischen_interaktionen.txt
     global model
     model = "Oneplus 6 - Android 11 "
     subprocess.run("cp tls-log.txt tls-log.json", shell=True)
@@ -179,6 +183,7 @@ def parseJsonFile_einzelneApps():
     
 
 def parseJsonFile_zweimaliges_automatisiert(): 
+#https://github.com/juhotter/Bachelorarbeit/blob/f91ada72ed775631d2bd4ca758b2531d8ecd2bca/Log_Files/vergleich_zweier_manueller_Ausf%C3%BChrungen.txt
     global model
     model = "Oneplus 6 - Android 11 "
     subprocess.run("cp tls-log.txt tls-log.json", shell=True)
