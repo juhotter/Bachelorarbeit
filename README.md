@@ -1,6 +1,9 @@
 # readme
 
-
+# REFERENCES:
+## https://github.com/mitmproxy/android-unpinner
+## https://github.com/shroudedcode/apk-mitm
+## https://github.com/sensepost/objection
 
 # Automatisiertes Herunterladen von APKS
 `./eval.py download --fromfile FILENAME `
