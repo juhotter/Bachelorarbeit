@@ -174,12 +174,33 @@ def parseJsonFile_einzelneApps():
     subprocess.run("cp tls-log.txt tls-log.json", shell=True)
     dataframe = pandas.read_json("tls-log.json", lines=True )
     all_app_names = sorted(dataframe['app'].unique())
-    grouped = dataframe.groupby('app')["method","success"].value_counts().unstack().sort_index(ascending=False)
+    grouped = dataframe.groupby('app')["success"].value_counts().unstack().apply(lambda x: x/x.sum()*100, axis=1).sort_values([True],ascending=False)
+    print(grouped)
     ax = grouped.plot.barh(stacked=True,color=['slategray', 'powderblue'])
-    ax.set_title("Vergleich der Approaches gruppiert nach Apps")
+    for p in ax.patches:
+        left, bottom, width, height = p.get_bbox().bounds
+        if width != 0.0:
+         ax.annotate(("%.1f%%") %(width), xy=(left+width/2, bottom+height/2), 
+                    ha='center', va='center', fontsize=5)
+    ax.xaxis.set_major_formatter(FormatStrFormatter('%d%%'))
+    plt.legend(bbox_to_anchor=(1,1), loc="upper left")
     ax.set_xlabel('Contacted-Domains')
     ax.set_ylabel('')
     ax.plot()
+    ax.figure.savefig('all_apps_listed_rooted.pdf',bbox_inches='tight')
+    plt.show()
+ 
+def percentage():
+    
+    df = pandas.DataFrame({'Downloadzahl': ['> 1Md', '1M - 1Md', '1k - 1M', '< 1k'], 'Durchschnittsprozent': [46.4, 17.2, 9.2, 5.2]})
+    ax = df.plot.barh(color=['slategray', 'powderblue'], x='Downloadzahl',)
+    ax.set_xlabel('fehlgeschlagene Apps einer Gruppe')
+    for container in ax.containers:
+        ax.bar_label(container,label_type='center',fmt='%.1f%%', fontsize=6)
+    ax.xaxis.set_major_formatter(FormatStrFormatter('%d%%'))
+    ax.set_ylabel("")
+    ax.plot()
+    ax.figure.savefig('fehlschlag.pdf',bbox_inches='tight')
     plt.show()
     
 
