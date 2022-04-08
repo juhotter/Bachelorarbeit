@@ -109,8 +109,9 @@ def parseJsonFile_gruppenvergleich():
     dataframe['group'] = dataframe['group'].replace(["Million_bis_Milliarde"],'1Md - 1M')
     dataframe['group'] = dataframe['group'].replace(["mehr_als_1_Milliarde"],'> 1Md')
     dataframe['group'] = dataframe['group'].replace(["Thousand_to_Million"],'1M - 1k')
-    new_group = (dataframe.groupby("app",)["group","success"].value_counts().unstack().apply(lambda x: x/x.sum()*100, axis=1).sort_values([True],ascending=False))
-    grouped= new_group.groupby("group").mean().sort_values([True],ascending=False)
+    new_group = dataframe.groupby("app",)["group","success"].value_counts().unstack()
+    grouped= new_group.groupby("group").mean().apply(lambda x: x/x.sum()*100, axis=1).sort_values([True],ascending=False)
+
     ax = grouped.plot.barh(stacked=True,color=['slategray', 'powderblue'])
     for container in ax.containers:
         ax.bar_label(container,label_type='center',fmt='%.1f%%', fontsize=6) 
