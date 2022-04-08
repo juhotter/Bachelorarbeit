@@ -20,7 +20,7 @@
 - apkmitm
 - objection
 - frida
-- none,
+- none
 - rooted 
 
 # Im Log-File
