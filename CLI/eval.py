@@ -55,7 +55,6 @@ def adb_uninstall_after_time(apkfile):
 
 
 def startMitmProxy(appname,method):
-    
     global proc 
     newappname = appname[:len(appname)-4]
     #change TLS_device and Downloadgroup if you need it for grouping
@@ -66,9 +65,44 @@ def endMitmProxy():
     global proc
     proc.terminate()
 
-
-
-def parseJsonFile_emulator_vs_hardware():
+    
+########Auswertungsmethoden################Auswertungsmethoden################Auswertungsmethoden########
+def parseJsonFile_interaktionenvergleich():
+    global model
+    model = "Oneplus 6 - Android 11 "
+    subprocess.run("cp tls-log.txt tls-log.json", shell=True)
+    dataframe = pandas.read_json("tls-log.json", lines=True )
+    print(dataframe.groupby("version")["success"].value_counts())
+    dataframe['version'] = dataframe['version'].replace([1],'keine\nInteraktion')
+    dataframe['version'] = dataframe['version'].replace([2],'manuelle\nInteraktion')
+    dataframe['version'] = dataframe['version'].replace([3],'automatisierte\nInteraktion')
+    grouped = dataframe.groupby('version')["success"].value_counts().unstack().sort_values([True],ascending=True)
+    ax = grouped.plot.barh(stacked=True,color=['slategray', 'powderblue'])
+    ax.set_xlabel('Contacted-Domains')
+    ax.set_ylabel("")
+    ax.plot()
+    ax.figure.savefig('vergleich.pdf',bbox_inches='tight')
+    plt.show()
+    
+def parseJsonFile_vergleich_zweimal_automatisiert(): 
+    global model
+    model = "Oneplus 6 - Android 11 "
+    subprocess.run("cp tls-log.txt tls-log.json", shell=True)
+    dataframe = pandas.read_json("tls-log.json", lines=True )
+    print(dataframe.groupby("version")["success"].value_counts())
+    dataframe['version'] = dataframe['version'].replace([3],'Erste\nAusführung')
+    dataframe['version'] = dataframe['version'].replace([4],'Zweite\nAusführung')
+    grouped = dataframe.groupby('version')["success"].value_counts().unstack().sort_values([True],ascending=True)
+    ax = grouped.plot.barh(stacked=True,color=['slategray', 'powderblue'])
+    ax.set_xlabel('Contacted-Domains')
+    ax.set_ylabel("")
+    plt.legend(bbox_to_anchor=(1,1), loc="upper left")
+    ax.plot()
+    ax.figure.savefig('automatisiert_zweimal.pdf',bbox_inches='tight')
+    plt.show()
+    
+    
+ def parseJsonFile_emulator_vs_hardware():
     global model
     model = "Oneplus 6 - Android 11 "
     subprocess.run("cp tls-log.txt tls-log.json", shell=True)
@@ -82,10 +116,8 @@ def parseJsonFile_emulator_vs_hardware():
     ax = grouped.plot.barh(stacked=True,color=['slategray', 'powderblue'])
     ax.set_xlabel('Contacted-Domains')
     ax.set_ylabel('')
- 
     for container in ax.containers:
         ax.bar_label(container,label_type='center',fmt='%.1f%%', fontsize=6)
-    
     plt.legend(bbox_to_anchor=(1,1), loc="upper left")
     ax.plot()
     ax.xaxis.set_major_formatter(FormatStrFormatter('%d%%'))
@@ -93,7 +125,25 @@ def parseJsonFile_emulator_vs_hardware():
     plt.show()
 
 
-
+def parseJsonFile_allhardware():
+    global model
+    model = "Oneplus 6 - Android 11 "
+    subprocess.run("cp tls-log.txt tls-log.json", shell=True)
+    dataframe = pandas.read_json("tls-log.json", lines=True )
+    new_group = dataframe.groupby("app",)["method","success"].value_counts().unstack()
+    grouped= new_group.groupby("method").sum().apply(lambda x: x/x.sum()*100, axis=1).sort_values([True],ascending=True)
+    ax = grouped.plot.barh(stacked=True,color=['slategray', 'powderblue'])
+    for container in ax.containers:
+        ax.bar_label(container,label_type='center',fmt='%.1f%%', fontsize=6)
+    ax.set_xlabel('Contacted-Domains')
+    ax.xaxis.set_major_formatter(FormatStrFormatter('%d%%'))
+    ax.set_ylabel("")
+    ax.legend(["nicht entschlüsselte Verbindungen", "entschlüsselte Verbindungen"],bbox_to_anchor=(0,1), loc="lower left", )
+    ax.plot()
+    ax.figure.savefig('hardware_alltogether.pdf',bbox_inches='tight')
+    plt.show()
+    
+    
 def parseJsonFile_gruppenvergleich():
     global model
     model = "Oneplus 6 - Android 11 "
@@ -120,45 +170,6 @@ def parseJsonFile_gruppenvergleich():
     plt.show()
 
 
-def parseJsonFile_interaktionenvergleich():
-    global model
-    model = "Oneplus 6 - Android 11 "
-    subprocess.run("cp tls-log.txt tls-log.json", shell=True)
-    dataframe = pandas.read_json("tls-log.json", lines=True )
-    print(dataframe.groupby("version")["success"].value_counts())
-    dataframe['version'] = dataframe['version'].replace([1],'keine\nInteraktion')
-    dataframe['version'] = dataframe['version'].replace([2],'manuelle\nInteraktion')
-    dataframe['version'] = dataframe['version'].replace([3],'automatisierte\nInteraktion')
-    grouped = dataframe.groupby('version')["success"].value_counts().unstack().sort_values([True],ascending=True)
-    ax = grouped.plot.barh(stacked=True,color=['slategray', 'powderblue'])
-    ax.set_xlabel('Contacted-Domains')
-    ax.set_ylabel("")
-    ax.plot()
-    ax.figure.savefig('vergleich.pdf',bbox_inches='tight')
-    plt.show()
-   
-
-def parseJsonFile_einzelneApps(): 
-    global model
-    subprocess.run("cp tls-log.txt tls-log.json", shell=True)
-    dataframe = pandas.read_json("tls-log.json", lines=True )
-    all_app_names = sorted(dataframe['app'].unique())
-    grouped = dataframe.groupby('app')["success"].value_counts().unstack().apply(lambda x: x/x.sum()*100, axis=1).sort_values([True],ascending=False)
-    print(grouped)
-    ax = grouped.plot.barh(stacked=True,color=['slategray', 'powderblue'])
-    for p in ax.patches:
-        left, bottom, width, height = p.get_bbox().bounds
-        if width != 0.0:
-         ax.annotate(("%.1f%%") %(width), xy=(left+width/2, bottom+height/2), 
-                    ha='center', va='center', fontsize=5)
-    ax.xaxis.set_major_formatter(FormatStrFormatter('%d%%'))
-    plt.legend(bbox_to_anchor=(1,1), loc="upper left")
-    ax.set_xlabel('Contacted-Domains')
-    ax.set_ylabel('')
-    ax.plot()
-    ax.figure.savefig('all_apps_listed_rooted.pdf',bbox_inches='tight')
-    plt.show()
- 
 def parseJsonFile_failure_apps():
     df = pandas.DataFrame({
     'Objection': [14,8,5,3],
@@ -180,24 +191,34 @@ def parseJsonFile_failure_apps():
     ax.figure.savefig('fehlschlag.pdf',bbox_inches='tight')
     plt.show()
     
-    
-def parseJsonFile_vergleich_zweimal_automatisiert(): 
+def parseJsonFile_einzelneApps(): 
     global model
-    model = "Oneplus 6 - Android 11 "
     subprocess.run("cp tls-log.txt tls-log.json", shell=True)
     dataframe = pandas.read_json("tls-log.json", lines=True )
-    print(dataframe.groupby("version")["success"].value_counts())
-    dataframe['version'] = dataframe['version'].replace([3],'Erste\nAusführung')
-    dataframe['version'] = dataframe['version'].replace([4],'Zweite\nAusführung')
-    grouped = dataframe.groupby('version')["success"].value_counts().unstack().sort_values([True],ascending=True)
+    all_app_names = sorted(dataframe['app'].unique())
+    grouped = dataframe.groupby('app')["success"].value_counts().unstack().apply(lambda x: x/x.sum()*100, axis=1).sort_values([True],ascending=False)
+    print(grouped)
     ax = grouped.plot.barh(stacked=True,color=['slategray', 'powderblue'])
-    ax.set_xlabel('Contacted-Domains')
-    ax.set_ylabel("")
+    for p in ax.patches:
+        left, bottom, width, height = p.get_bbox().bounds
+        if width != 0.0:
+         ax.annotate(("%.1f%%") %(width), xy=(left+width/2, bottom+height/2), 
+                    ha='center', va='center', fontsize=5)
+    ax.xaxis.set_major_formatter(FormatStrFormatter('%d%%'))
     plt.legend(bbox_to_anchor=(1,1), loc="upper left")
+    ax.set_xlabel('Contacted-Domains')
+    ax.set_ylabel('')
     ax.plot()
-    ax.figure.savefig('automatisiert_zweimal.pdf',bbox_inches='tight')
+    ax.figure.savefig('all_apps_listed_rooted.pdf',bbox_inches='tight')
     plt.show()
+    
+
    
+
+########Auswertungsmethoden################Auswertungsmethoden################Auswertungsmethoden########
+
+
+
 def apkmitm_patching(apkfile):
     subprocess.run("apk-mitm "+apkfile, shell = True)
 
@@ -210,11 +231,9 @@ def objection_patching(apkfile,method):
     packagename = apkfile[:len(apkfile)-4]
     adb_install(newapkname)
 
- 
 def frida_patching(apkfile):
     subprocess.run("android-unpinner all "+apkfile,shell=True)
     
-
 def adb_run_objection(apkfile):
     packagename = apkfile[:len(apkfile)-4]
     click.echo(packagename)
@@ -228,6 +247,9 @@ def adb_run_objection(apkfile):
 
 
 
+    
+    
+    
 @click.command()
 @click.argument('name')
 @click.option('--method',nargs=2,help='which method -  choose between : none,apmitm,objection,frida,rooted?')
@@ -279,12 +301,6 @@ def main(name,method,fromfile):
             adb_run(method[1])
             adb_uninstall_after_time(method[1])
             endMitmProxy()
-
-
-
-
-
-
 
 
 #entry point
