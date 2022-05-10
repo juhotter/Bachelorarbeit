@@ -1,26 +1,25 @@
 #!/usr/local/bin/python3
 from datetime import date
+#!/usr/local/bin/python3
+from cmath import nan
+from datetime import date
 from email.policy import default
 from itertools import count, groupby
+from pydoc import visiblename
 from sre_constants import SUCCESS
 from tokenize import group
 import click
-import logging
 import subprocess
 import json
 import pandas
 import matplotlib.pyplot as plt
-import packaging
-import random
 import time
-import numpy
-from matplotlib.ticker import (MultipleLocator, FormatStrFormatter,
-                               AutoMinorLocator)
+from matplotlib.ticker import (MultipleLocator, FormatStrFormatter,AutoMinorLocator)
 
 
 
 proc = None
-model = "Test"
+model = "noModell"
 start = None
 
 
